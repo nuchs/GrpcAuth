@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace GrpcAuth
 {
-    public class Program
+    public class ServerProgram
     {
         public static void Main(string[] args)
         {
