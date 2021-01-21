@@ -25,16 +25,19 @@ namespace Client
 
         private static GrpcChannel GetChannel(string[] args)
         {
-            if (args.Contains("-https"))
+            if (args.Contains("-trust"))
             {
+                // Signed by the correct CA
                 return CreateSecureChannel("trustedClient.pfx");
             }
-            else if (args.Contains("-bad"))
+            else if (args.Contains("-untrust"))
             {
+                // Signed by an untrusted CA
                 return CreateSecureChannel("untrustedClient.pfx");
             }
             else
             {
+                // Don't use a cert
                 return GrpcChannel.ForAddress("https://localhost:5001");
             }
         }

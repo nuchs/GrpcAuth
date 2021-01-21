@@ -23,10 +23,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Update="Certs\grpc-client.pfx">
+		<None Update="Certs\trustedClient.pfx">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
-		<None Update="Certs\untrustedClient2.pfx">
+		<None Update="Certs\untrustedClient.pfx">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
 	</ItemGroup>
