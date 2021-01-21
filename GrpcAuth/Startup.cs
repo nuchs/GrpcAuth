@@ -3,10 +3,14 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Authentication.Certificate;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Security.Cryptography.X509Certificates;
+using Microsoft.Extensions.Logging;
+using GrpcAuth.Services;
 
 namespace GrpcAuth
 {
@@ -16,6 +20,43 @@ namespace GrpcAuth
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services
+                .AddAuthentication(CertificateAuthenticationDefaults.AuthenticationScheme)
+                .AddCertificate(options =>
+                {
+                    options.AllowedCertificateTypes = CertificateTypes.Chained;
+                    options.RevocationMode = X509RevocationMode.NoCheck;
+                    options.ValidateCertificateUse = true;
+                    options.ValidateValidityPeriod = true;
+                    options.Events = new CertificateAuthenticationEvents()
+                    {
+                        OnAuthenticationFailed = context =>
+                        {
+                            var logger = context.HttpContext.RequestServices.GetService<ILogger<Startup>>();
+
+                            logger.LogError(context.Exception, "------------------------------- Why do we never see this ------------------------------ ");
+
+                            return Task.CompletedTask;
+                        },
+                        OnCertificateValidated = context =>
+                        {
+                            var logger = context.HttpContext.RequestServices.GetService<ILogger<Startup>>();
+                            logger.LogInformation("Within the OnCertificateValidated portion of Startup");
+
+                            var caValidator = context.HttpContext.RequestServices.GetService<ICertificateAuthorityValidator>();
+                            if (!caValidator.IsValid(context.ClientCertificate))
+                            {
+                                var failValidationMsg = $"The client certificate failed to validate";
+                                logger.LogWarning(failValidationMsg);
+                                context.Fail(failValidationMsg);
+                            }
+
+                            return Task.CompletedTask;
+                        }
+                    };
+                });
+
+            services.AddAuthorization();
             services.AddGrpc();
         }
 
@@ -28,10 +69,12 @@ namespace GrpcAuth
             }
 
             app.UseRouting();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGrpcService<GreeterService>();
+                endpoints.MapGrpcService<GreeterService>().RequireAuthorization();
 
                 endpoints.MapGet("/", async context =>
                 {
