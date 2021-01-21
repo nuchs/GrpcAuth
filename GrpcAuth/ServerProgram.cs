@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Server.Kestrel.Https;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
@@ -29,6 +30,7 @@ namespace GrpcAuth
                         serverOptions.ConfigureHttpsDefaults(listenOptions =>
                         {
                             listenOptions.ServerCertificate = new X509Certificate2(@"Certs\grpc-server.pfx");
+                            listenOptions.ClientCertificateMode = ClientCertificateMode.RequireCertificate;
                         });
                     });
                 });
