@@ -23,6 +23,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<None Update="Certs\otherClient.pfx">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
 		<None Update="Certs\trustedClient.pfx">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>

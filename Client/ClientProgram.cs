@@ -10,35 +10,40 @@ namespace Client
 {
     internal class ClientProgram
     {
+        private const string serverAddress = "https://localhost:5001";
+
         private static async Task Main(string[] args)
         {
-            // The port number(5001) must match the port of the gRPC server.
             using var channel = GetChannel(args);
             var client = new Greeter.GreeterClient(channel);
 
             var reply = await client.SayHelloAsync(
                               new HelloRequest { Name = "GreeterClient" });
+
             Console.WriteLine("Greeting: " + reply.Message);
-            Console.WriteLine("Press any key to exit...");
-            Console.ReadKey();
         }
 
         private static GrpcChannel GetChannel(string[] args)
         {
             if (args.Contains("-trust"))
             {
-                // Signed by the correct CA
+                Console.WriteLine("Connecting to server using a cert signed by the correct trusted CA");
                 return CreateSecureChannel("trustedClient.pfx");
+            }
+            else if (args.Contains("-other"))
+            {
+                Console.WriteLine("Connecting to server using a cert signed by the wrong trusted CA");
+                return CreateSecureChannel("otherClient.pfx");
             }
             else if (args.Contains("-untrust"))
             {
-                // Signed by an untrusted CA
+                Console.WriteLine("Connecting to server using a cert signed by an untrusted CA");
                 return CreateSecureChannel("untrustedClient.pfx");
             }
             else
             {
-                // Don't use a cert
-                return GrpcChannel.ForAddress("https://localhost:5001");
+                Console.WriteLine("Connecting to server without using a cert");
+                return GrpcChannel.ForAddress(serverAddress);
             }
         }
 
@@ -46,7 +51,7 @@ namespace Client
         {
             var handler = new HttpClientHandler();
             handler.ClientCertificates.Add(new X509Certificate2(@$"Certs\{certName}"));
-            return GrpcChannel.ForAddress("https://localhost:5001", new GrpcChannelOptions { HttpHandler = handler });
+            return GrpcChannel.ForAddress(serverAddress, new GrpcChannelOptions { HttpHandler = handler });
         }
     }
 }
