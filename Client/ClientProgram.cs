@@ -1,13 +1,13 @@
-﻿using Grpc.Net.Client;
-using GrpcGreeterClient;
-using System;
-using System.Linq;
-using System.Net.Http;
-using System.Security.Cryptography.X509Certificates;
-using System.Threading.Tasks;
-
-namespace Client
+﻿namespace Client
 {
+    using Grpc.Net.Client;
+    using GrpcGreeterClient;
+    using System;
+    using System.Linq;
+    using System.Net.Http;
+    using System.Security.Cryptography.X509Certificates;
+    using System.Threading.Tasks;
+
     internal class ClientProgram
     {
         private const string serverAddress = "https://localhost:5001";
