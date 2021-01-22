@@ -1,19 +1,13 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.AspNetCore.Authentication.Certificate;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Security.Cryptography.X509Certificates;
-using Microsoft.Extensions.Logging;
-using GrpcAuth.Services;
-
-namespace GrpcAuth
+﻿namespace GrpcAuth
 {
+    using Microsoft.AspNetCore.Authentication.Certificate;
+    using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Hosting;
+    using System.Security.Cryptography.X509Certificates;
+
     public class Startup
     {
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -24,36 +18,16 @@ namespace GrpcAuth
                 .AddAuthentication(CertificateAuthenticationDefaults.AuthenticationScheme)
                 .AddCertificate(options =>
                 {
-                    options.AllowedCertificateTypes = CertificateTypes.Chained;
+                    using var rootStore = new X509Store(StoreName.Root, StoreLocation.LocalMachine);
+                    rootStore.Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly);
+                    var trustedCerts = rootStore.Certificates.Find(X509FindType.FindByThumbprint, "54baea1c838d09981a71410637ebbd2cc34b3367", validOnly: true);
+
+                    options.CustomTrustStore = trustedCerts;
+                    options.ChainTrustValidationMode = X509ChainTrustMode.CustomRootTrust;
                     options.RevocationMode = X509RevocationMode.NoCheck;
+                    options.AllowedCertificateTypes = CertificateTypes.Chained;
                     options.ValidateCertificateUse = true;
                     options.ValidateValidityPeriod = true;
-                    options.Events = new CertificateAuthenticationEvents()
-                    {
-                        OnAuthenticationFailed = context =>
-                        {
-                            var logger = context.HttpContext.RequestServices.GetService<ILogger<Startup>>();
-
-                            logger.LogError(context.Exception, "------------------------------- Why do we never see this ------------------------------ ");
-
-                            return Task.CompletedTask;
-                        },
-                        OnCertificateValidated = context =>
-                        {
-                            var logger = context.HttpContext.RequestServices.GetService<ILogger<Startup>>();
-                            logger.LogInformation("Within the OnCertificateValidated portion of Startup");
-
-                            var caValidator = context.HttpContext.RequestServices.GetService<ICertificateAuthorityValidator>();
-                            if (!caValidator.IsValid(context.ClientCertificate))
-                            {
-                                var failValidationMsg = $"The client certificate failed to validate";
-                                logger.LogWarning(failValidationMsg);
-                                context.Fail(failValidationMsg);
-                            }
-
-                            return Task.CompletedTask;
-                        }
-                    };
                 });
 
             services.AddAuthorization();
@@ -71,10 +45,11 @@ namespace GrpcAuth
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
-
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGrpcService<GreeterService>().RequireAuthorization();
+                endpoints
+                    .MapGrpcService<GreeterService>()
+                    .RequireAuthorization();
 
                 endpoints.MapGet("/", async context =>
                 {
