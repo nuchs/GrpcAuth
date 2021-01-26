@@ -27,17 +27,27 @@
         {
             if (args.Contains("-trust"))
             {
-                Console.WriteLine("Connecting to server using a cert signed by the correct trusted CA");
-                return CreateSecureChannel("trustedClient.pfx");
+                Console.WriteLine("Trust chain : client -> trusted intermediate -> trusted CA");
+                return CreateSecureChannel("appTrustChainClient.pfx");
             }
-            else if (args.Contains("-other"))
+            else if (args.Contains("-root"))
             {
-                Console.WriteLine("Connecting to server using a cert signed by the wrong trusted CA");
-                return CreateSecureChannel("otherClient.pfx");
+                Console.WriteLine("Trust chain : client -> host (not server) trusts intermediate -> trusted CA");
+                return CreateSecureChannel("appTrustRootClient.pfx");
+            }
+            else if (args.Contains("-int"))
+            {
+                Console.WriteLine("Trust chain : client -> trusted intermediate -> host (not server) trusts CA");
+                return CreateSecureChannel("appTrustIntClient.pfx");
+            }
+            else if (args.Contains("-host"))
+            {
+                Console.WriteLine("Trust chain : client -> host (not server) trusts intermediate -> host (not server) trusts CA");
+                return CreateSecureChannel("hostTrustClient.pfx");
             }
             else if (args.Contains("-untrust"))
             {
-                Console.WriteLine("Connecting to server using a cert signed by an untrusted CA");
+                Console.WriteLine("Trust chain : client -> untrusted intermediate -> untrusted CA");
                 return CreateSecureChannel("untrustedClient.pfx");
             }
             else

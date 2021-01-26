@@ -29,8 +29,9 @@
 		<None Update="Certs\trustedClient.pfx">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
-		<None Update="Certs\untrustedClient.pfx">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="ClientCerts\" />
 	</ItemGroup>
 </Project>

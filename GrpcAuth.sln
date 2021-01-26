@@ -3,9 +3,14 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GrpcAuth", "GrpcAuth\GrpcAuth.csproj", "{41F0555D-13C3-448E-83A2-86E83CC84811}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GrpcAuth", "GrpcAuth\GrpcAuth.csproj", "{41F0555D-13C3-448E-83A2-86E83CC84811}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client", "Client\Client.csproj", "{BB65C001-B2A0-45EC-909E-F8A29EF3F00D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Client", "Client\Client.csproj", "{BB65C001-B2A0-45EC-909E-F8A29EF3F00D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Certs", "Certs", "{1F2B3C67-9B6C-4615-87A1-C4FF05AC6065}"
+	ProjectSection(SolutionItems) = preProject
+		Certs\certgen.sh = Certs\certgen.sh
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
