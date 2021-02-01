@@ -61,15 +61,15 @@ Options:
 
         private static X509Certificate2 GetServerCert(string[] args)
         {
-            var certPath = @"ServerCerts\goodCert.pfx";
+            var certPath = @"ServerCerts\localhost.pfx";
 
             if (args.Contains("-badname"))
             {
-                certPath = @"ServerCerts\badNameCert.pfx";
+                certPath = @"ServerCerts\badName.pfx";
             }
             else if (args.Contains("-badchain"))
             {
-                certPath = @"ServerCerts\badChainCert.pfx";
+                certPath = @"ServerCerts\badChain.pfx";
             }
 
             return new X509Certificate2(certPath);
