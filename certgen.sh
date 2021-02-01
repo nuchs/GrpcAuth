@@ -1,5 +1,35 @@
 #!/bin/bash
 
+# -----------------------------------------------------------------------------
+# Config
+# -----------------------------------------------------------------------------
+appCA="ca_appTrusted"
+hostCA="ca_hostTrusted"
+otherCA="ca_untrusted"
+
+appInt="int_appTrusted"
+hostInt1="int_hostTrusted"
+hostInt2="int_appTrustsRootNotInt"
+hostInt3="int_appTrustsIntNotRoot"
+otherInt="int_untrusted"
+
+appClient="client_appTrusted"
+hostClient1="client_hostTrusted"
+hostClient2="client_appTrustsRootNotInt"
+hostClient3="client_appTrustsIntNotRoot"
+otherClient="client_untrusted"
+
+goodServer="localhost"
+badServer="unlocalhost"
+
+clientCertDir="Client/ClientCerts"
+serverCertDir="GrpcAuth/ServerCerts"
+appTrustDir="GrpcAuth/AppTrustCerts"
+hostTrustDir="InstallThese"
+
+# -----------------------------------------------------------------------------
+# Helper Functions
+# -----------------------------------------------------------------------------
 function GeneratePrivateKey {
   echo "-- Generating key for $1"
   openssl genrsa -out $1.key -passout pass:
@@ -45,29 +75,29 @@ function CreateCert {
   PackFiles $1
 }
 
-appCA="ca_appTrusted"
-hostCA="ca_hostTrusted"
-otherCA="ca_untrusted"
+function CopyCerts {
+  local dest=$1
+  local extension=$2
+  shift
+  shift
+  local files=("$@")
 
-appInt="int_appTrusted"
-hostInt1="int_hostTrusted"
-hostInt2="int_appTrustsRootNotInt"
-hostInt3="int_appTrustsIntNotRoot"
-otherInt="int_untrusted"
+  echo "Moving $extension files to $dest"
+  mkdir -p $dest
 
-appClient="client_appTrusted"
-hostClient1="client_hostTrusted"
-hostClient2="client_appTrustsRootNotInt"
-hostClient3="client_appTrustsIntNotRoot"
-otherClient="client_untrusted"
+  for file in "${files[@]}"
+  do
+    cp $file.$extension $dest
+  done
+}
 
-goodServer="localhost"
-badServer="unlocalhost"
+function CleanTempFiles {
+  rm -f *.cer *.csr *.key *.pfx *.srl
+}
 
-clientCertDir="Client\\ClientCerts"
-serverCertDir="GrpcAuth\\ServerCerts"
-appTrustDir="GrpcAuth\\AppTrustCerts"
-hostTrustDir="InstallThese"
+# -----------------------------------------------------------------------------
+# Script
+# -----------------------------------------------------------------------------
 
 CreateCA $appCA
 CreateCA $hostCA
@@ -88,22 +118,9 @@ CreateCert $hostClient2 $hostInt2 "client"
 CreateCert $hostClient3 $hostInt3 "client"
 CreateCert $otherClient $otherInt "client"
 
-mv $appClient.pfx   $clientCertDir
-mv $hostClient1.pfx $clientCertDir
-mv $hostClient2.pfx $clientCertDir
-mv $hostClient3.pfx $clientCertDir
-mv $otherClient.pfx $clientCertDir
+CopyCerts $appTrustDir "cer" $appCA $appInt $hostInt3
+CopyCerts $hostTrustDir  "cer" $appCA $hostCA $hostInt1 $hostInt2 $hostInt3
+CopyCerts $serverCertDir "pfx" $goodServer $badServer
+CopyCerts $clientCertDir "pfx" $appClient $hostClient1 $hostClient2 $hostClient3 $otherClient
 
-mv $goodServer.pfx $serverCertDir
-mv $badServer.pfx $serverCertDir
-
-mv $appCA.cer $appTrustStore
-mv $appInt.cer $appTrustStore
-cp $hostInt2.cer $appTrustStore
-
-mv $hostCA.cer $hostTrustDir
-mv $hostInt1.cer $hostTrustDir
-mv $hostInt2.cer $hostTrustDir
-mv $hostInt3.cer $hostTrustDir
-
-rm -f *.cer *.csr *.key *.pfx
+CleanTempFiles
