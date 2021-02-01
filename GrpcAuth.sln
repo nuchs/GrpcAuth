@@ -7,14 +7,18 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GrpcAuth", "GrpcAuth\GrpcAu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Client", "Client\Client.csproj", "{BB65C001-B2A0-45EC-909E-F8A29EF3F00D}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Certs", "Certs", "{1F2B3C67-9B6C-4615-87A1-C4FF05AC6065}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "InstallThese", "InstallThese", "{1F2B3C67-9B6C-4615-87A1-C4FF05AC6065}"
 	ProjectSection(SolutionItems) = preProject
 		InstallThese\ca_appTrusted.cer = InstallThese\ca_appTrusted.cer
 		InstallThese\ca_hostTrusted.cer = InstallThese\ca_hostTrusted.cer
-		certgen.sh = certgen.sh
 		InstallThese\int_appTrustsIntNotRoot.cer = InstallThese\int_appTrustsIntNotRoot.cer
 		InstallThese\int_appTrustsRootNotInt.cer = InstallThese\int_appTrustsRootNotInt.cer
 		InstallThese\int_hostTrusted.cer = InstallThese\int_hostTrusted.cer
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{510DE308-16AD-42DD-88D3-9ADF86B8A90A}"
+	ProjectSection(SolutionItems) = preProject
+		certgen.sh = certgen.sh
 	EndProjectSection
 EndProject
 Global

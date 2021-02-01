@@ -35,13 +35,22 @@ Tool to test certificate authentication in Grpc
 Usage:
     Client.exe [option]
 
-Description:
-    To run the test you must have the GrpcAuth service running on
-    localhost:5001 and all of certs in the solution folder ""Certs"" must have
-    been installed. The client can then be instructed to connect to service with
-    a variety of different certificates which are specified using a command line
-    option. If no arguments are specified then the client will try to connect
-    without a certificate.
+Setup:
+    Before running this program you must have installed all of the certificates
+    in the ""Install These"" folder. The ca_* certs should go in as Trust Root
+    Certificate Authorities and the int_* certs should go in as Intermediate
+    Certificate Authorities. You must also have the GrpcAuth service running on
+    localhost:5001.
+
+Description
+    The client will attempt to connect to the GrpcAuth service and send a simple
+    ""Hello"" message, you can instruct it to connect with a variety of
+    different certificates which are specified using a command line option. If
+    no arguments are specified then the client will try to connect without a
+    certificate.
+
+    The client and server should fail to make a connection unless both sides
+    present a certificate chain which is fully trusted by the other.
 
     If required you can regenerate all of the certificates using the certgen
     script (requires bash).
