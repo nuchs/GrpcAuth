@@ -29,6 +29,12 @@
     <None Update="AppTrustCerts\int_appTrustsIntNotRoot.cer">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="ServerCerts\badChain.pfx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="ServerCerts\badName.pfx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="ServerCerts\localhost.pfx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

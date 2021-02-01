@@ -110,10 +110,10 @@ CreateIntermediateCA $hostInt2 $appCA
 CreateIntermediateCA $hostInt3 $hostCA
 CreateIntermediateCA $otherInt $otherCA
 
-CreateCert $goodServer    $hostCA "server" 
+CreateCert $goodServer    $otherCA "server" 
 mv $goodServer.pfx $badChainServer.pfx
-CreateCert $goodServer    $appCA  "server"
-CreateCert $badNameServer $appCA  "server"
+CreateCert $goodServer    $appCA   "server"
+CreateCert $badNameServer $appCA   "server"
 
 CreateCert $appClient   $appCA    "client"
 CreateCert $hostClient1 $hostInt1 "client"

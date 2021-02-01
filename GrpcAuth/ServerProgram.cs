@@ -25,7 +25,7 @@ namespace GrpcAuth
 Tool to test certificate authentication in Grpc
 
 Usage:
-    GrpcAuth [-bad]
+    GrpcAuth [-badname|-badchain]
 
 Description:
     Starts a service which can be connected to using the client program. The
