@@ -43,6 +43,9 @@ Description:
     option. If no arguments are specified then the client will try to connect
     without a certificate.
 
+    If required you can regenerate all of the certificates using the certgen
+    script (requires bash).
+
 Options:
 
 -trust      The GrpcAuth server fully trusts the certificate chain of the client
