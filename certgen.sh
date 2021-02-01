@@ -20,7 +20,8 @@ hostClient3="client_appTrustsIntNotRoot"
 otherClient="client_untrusted"
 
 goodServer="localhost"
-badServer="unlocalhost"
+badNameServer="badName"
+badChainServer="badChain"
 
 clientCertDir="Client/ClientCerts"
 serverCertDir="GrpcAuth/ServerCerts"
@@ -109,8 +110,10 @@ CreateIntermediateCA $hostInt2 $appCA
 CreateIntermediateCA $hostInt3 $hostCA
 CreateIntermediateCA $otherInt $otherCA
 
-CreateCert $goodServer $appCA "server"
-CreateCert $badServer  $appCA "server"
+CreateCert $goodServer    $hostCA "server" 
+mv $goodServer.pfx $badChainServer.pfx
+CreateCert $goodServer    $appCA  "server"
+CreateCert $badNameServer $appCA  "server"
 
 CreateCert $appClient   $appCA    "client"
 CreateCert $hostClient1 $hostInt1 "client"
@@ -118,9 +121,9 @@ CreateCert $hostClient2 $hostInt2 "client"
 CreateCert $hostClient3 $hostInt3 "client"
 CreateCert $otherClient $otherInt "client"
 
-CopyCerts $appTrustDir "cer" $appCA $appInt $hostInt3
+CopyCerts $appTrustDir   "cer" $appCA $appInt $hostInt3
 CopyCerts $hostTrustDir  "cer" $appCA $hostCA $hostInt1 $hostInt2 $hostInt3
-CopyCerts $serverCertDir "pfx" $goodServer $badServer
+CopyCerts $serverCertDir "pfx" $goodServer $badNameServer $badChainServer
 CopyCerts $clientCertDir "pfx" $appClient $hostClient1 $hostClient2 $hostClient3 $otherClient
 
 CleanTempFiles
