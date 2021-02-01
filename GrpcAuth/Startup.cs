@@ -53,10 +53,11 @@
 
         private X509Certificate2Collection GetTrustedCerts()
         {
-            using var rootStore = new X509Store(StoreName.Root, StoreLocation.LocalMachine);
-            rootStore.Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly);
-            var trustedCerts = rootStore.Certificates.Find(X509FindType.FindByThumbprint, "54baea1c838d09981a71410637ebbd2cc34b3367", validOnly: true);
-            return trustedCerts;
+            return new X509Certificate2Collection(new[] {
+                new X509Certificate2(@"AppTrustCerts\ca_appTrusted.cer"),
+                new X509Certificate2(@"AppTrustCerts\int_appTrusted.cer"),
+                new X509Certificate2(@"AppTrustCerts\int_appTrustsIntNotRoot.cer"),
+            });
         }
     }
 }

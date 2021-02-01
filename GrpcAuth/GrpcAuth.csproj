@@ -19,4 +19,22 @@
     <Folder Include="ServerCerts\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="AppTrustCerts\ca_appTrusted.cer">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="AppTrustCerts\int_appTrusted.cer">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="AppTrustCerts\int_appTrustsIntNotRoot.cer">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="ServerCerts\localhost.pfx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="ServerCerts\unlocalhost.pfx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
